@@ -29,7 +29,7 @@ class Order(TimestampedModel):
         ordering = ["-created_at"]
         constraints = [
             models.CheckConstraint(
-                check=Q(status="REJECTED", rejection_reason__isnull=False)
+                condition=Q(status="REJECTED", rejection_reason__isnull=False)
                 | ~Q(status="REJECTED"),
                 name="order_rejection_reason_required",
             )
