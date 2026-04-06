@@ -2,6 +2,21 @@ import type { AdminMetrics, ApiEnvelope, Product, ShippingFee } from '../types/a
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8000/api'
 
+function unwrapListData<T>(data: unknown): T[] {
+  if (Array.isArray(data)) {
+    return data as T[]
+  }
+  if (
+    data &&
+    typeof data === 'object' &&
+    'results' in data &&
+    Array.isArray((data as { results?: unknown }).results)
+  ) {
+    return (data as { results: T[] }).results
+  }
+  return []
+}
+
 async function request<T>(path: string): Promise<ApiEnvelope<T>> {
   const response = await fetch(`${API_BASE}${path}`)
   if (!response.ok) {
@@ -11,7 +26,11 @@ async function request<T>(path: string): Promise<ApiEnvelope<T>> {
 }
 
 export async function fetchProducts(): Promise<ApiEnvelope<Product[]>> {
-  return request<Product[]>('/catalog/products/')
+  const response = await request<unknown>('/catalog/products/')
+  return {
+    ...response,
+    data: unwrapListData<Product>(response.data),
+  }
 }
 
 export async function fetchShippingFee(
