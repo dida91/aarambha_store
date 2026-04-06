@@ -28,7 +28,9 @@ class OrderAdmin(admin.ModelAdmin):
 
     @admin.action(description="Mark selected orders as rejected")
     def mark_rejected(self, request, queryset):
-        queryset.update(status=Order.Status.REJECTED)
+        queryset.update(
+            status=Order.Status.REJECTED, rejection_reason="Rejected by admin action."
+        )
 
 
 @admin.register(OrderItem)
