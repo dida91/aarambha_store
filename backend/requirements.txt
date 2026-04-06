@@ -15,4 +15,4 @@ pytest-django==4.9.0
 ruff==0.6.9
 black==26.3.1
 
-Pillow==11.0.0
+Pillow==12.1.1
