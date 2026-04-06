@@ -155,8 +155,7 @@ class CheckoutSerializer(serializers.Serializer):
             },
         )
 
-        for _, product, line_total in line_items:
-            cart_item = next(i for i, p, _ in line_items if p.id == product.id)
+        for cart_item, product, line_total in line_items:
             OrderItem.objects.create(
                 order=order,
                 product=product,
