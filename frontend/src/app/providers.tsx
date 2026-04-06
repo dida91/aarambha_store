@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
 
-import { AuthProvider } from './contexts/AuthContext'
-import { CartProvider } from './contexts/CartContext'
-import { ToastProvider } from './contexts/ToastContext'
+import { AuthProvider } from './contexts/auth-provider'
+import { CartProvider } from './contexts/cart-provider'
+import { ToastProvider } from './contexts/toast-provider'
 import { Toast } from '../components/common/Toast'
 
 export function AppProviders({ children }: { children: ReactNode }) {
