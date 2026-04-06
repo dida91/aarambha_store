@@ -1,8 +1,9 @@
-from django.urls import path
+from django.urls import include, path
+from rest_framework.routers import DefaultRouter
 
-from orders.views import MyOrderListView, OrdersHealthView
+from orders.views import OrderViewSet
 
-urlpatterns = [
-    path("health/", OrdersHealthView.as_view(), name="orders-health"),
-    path("me/", MyOrderListView.as_view(), name="orders-me"),
-]
+router = DefaultRouter()
+router.register("", OrderViewSet, basename="orders")
+
+urlpatterns = [path("", include(router.urls))]

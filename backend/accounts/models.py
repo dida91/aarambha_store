@@ -13,5 +13,8 @@ class User(TimestampedModel, AbstractUser):
     role = models.CharField(max_length=20, choices=Role.choices, default=Role.CUSTOMER)
     phone = models.CharField(max_length=20, blank=True)
 
+    class Meta:
+        indexes = [models.Index(fields=["role"]), models.Index(fields=["email"])]
+
     def __str__(self):
         return self.username

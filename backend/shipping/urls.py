@@ -1,12 +1,10 @@
-from django.urls import path
+from django.urls import include, path
+from rest_framework.routers import DefaultRouter
 
-from shipping.views import ActiveShippingSettingsView, ShippingHealthView
+from shipping.views import ShippingConfigViewSet, ShippingHealthViewSet
 
-urlpatterns = [
-    path("health/", ShippingHealthView.as_view(), name="shipping-health"),
-    path(
-        "settings/active/",
-        ActiveShippingSettingsView.as_view(),
-        name="shipping-active-settings",
-    ),
-]
+router = DefaultRouter()
+router.register("health", ShippingHealthViewSet, basename="shipping-health")
+router.register("configs", ShippingConfigViewSet, basename="shipping-configs")
+
+urlpatterns = [path("", include(router.urls))]

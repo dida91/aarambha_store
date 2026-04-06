@@ -1,8 +1,10 @@
-from django.urls import path
+from django.urls import include, path
+from rest_framework.routers import DefaultRouter
 
-from promotions.views import PromoListView, PromotionsHealthView
+from promotions.views import PromoCodeViewSet, PromotionsHealthViewSet
 
-urlpatterns = [
-    path("health/", PromotionsHealthView.as_view(), name="promotions-health"),
-    path("codes/", PromoListView.as_view(), name="promotions-codes"),
-]
+router = DefaultRouter()
+router.register("health", PromotionsHealthViewSet, basename="promotions-health")
+router.register("codes", PromoCodeViewSet, basename="promotions-codes")
+
+urlpatterns = [path("", include(router.urls))]

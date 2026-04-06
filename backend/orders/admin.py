@@ -1,4 +1,8 @@
+from decimal import Decimal
+
 from django.contrib import admin
+from django.db.models import Sum
+from django.utils import timezone
 
 from orders.models import Order, OrderItem, OrderStatusHistory
 
@@ -22,15 +26,66 @@ class OrderAdmin(admin.ModelAdmin):
     inlines = [OrderItemInline, OrderStatusHistoryInline]
     actions = ["mark_confirmed", "mark_rejected"]
 
+    def changelist_view(self, request, extra_context=None):
+        today = timezone.localdate()
+        month_start = today.replace(day=1)
+
+        extra = {
+            "dashboard_metrics": {
+                "total_orders": Order.objects.count(),
+                "pending_orders": Order.objects.filter(
+                    status=Order.Status.PENDING
+                ).count(),
+                "rejected_orders": Order.objects.filter(
+                    status=Order.Status.REJECTED
+                ).count(),
+                "today_sales": (
+                    Order.objects.filter(
+                        status=Order.Status.CONFIRMED, created_at__date=today
+                    ).aggregate(total=Sum("grand_total"))["total"]
+                    or Decimal("0.00")
+                ),
+                "month_sales": (
+                    Order.objects.filter(
+                        status=Order.Status.CONFIRMED,
+                        created_at__date__gte=month_start,
+                        created_at__date__lte=today,
+                    ).aggregate(total=Sum("grand_total"))["total"]
+                    or Decimal("0.00")
+                ),
+            }
+        }
+        if extra_context:
+            extra.update(extra_context)
+        return super().changelist_view(request, extra_context=extra)
+
     @admin.action(description="Mark selected orders as confirmed")
     def mark_confirmed(self, request, queryset):
-        queryset.update(status=Order.Status.CONFIRMED, rejection_reason=None)
+        for order in queryset:
+            if order.can_transition_to(Order.Status.CONFIRMED):
+                order.status = Order.Status.CONFIRMED
+                order.rejection_reason = None
+                order.save(update_fields=["status", "rejection_reason", "updated_at"])
+                OrderStatusHistory.objects.create(
+                    order=order,
+                    status=Order.Status.CONFIRMED,
+                    actor=request.user,
+                    note="Marked confirmed from admin action.",
+                )
 
     @admin.action(description="Mark selected orders as rejected")
     def mark_rejected(self, request, queryset):
-        queryset.update(
-            status=Order.Status.REJECTED, rejection_reason="Rejected by admin action."
-        )
+        for order in queryset:
+            if order.can_transition_to(Order.Status.REJECTED):
+                order.status = Order.Status.REJECTED
+                order.rejection_reason = "Rejected by admin action."
+                order.save(update_fields=["status", "rejection_reason", "updated_at"])
+                OrderStatusHistory.objects.create(
+                    order=order,
+                    status=Order.Status.REJECTED,
+                    actor=request.user,
+                    note="Marked rejected from admin action.",
+                )
 
 
 @admin.register(OrderItem)
