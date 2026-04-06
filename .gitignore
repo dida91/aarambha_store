@@ -1,0 +1,11 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Django
+*.sqlite3
+db.sqlite3
+
+# Tooling
+.pytest_cache/
+.ruff_cache/
