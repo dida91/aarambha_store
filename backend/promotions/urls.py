@@ -4,8 +4,8 @@ from rest_framework.routers import DefaultRouter
 from promotions.views import PromoCodeViewSet
 
 router = DefaultRouter()
-router.register('codes', PromoCodeViewSet, basename='promo-codes')
+router.register("codes", PromoCodeViewSet, basename="promo-codes")
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path("", include(router.urls)),
 ]

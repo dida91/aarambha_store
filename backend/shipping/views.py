@@ -8,7 +8,7 @@ from shipping.serializers import ShippingAddressSerializer, ShippingConfigSerial
 
 
 class ShippingConfigViewSet(viewsets.ModelViewSet):
-    queryset = ShippingConfig.objects.all().order_by('-created_at')
+    queryset = ShippingConfig.objects.all().order_by("-created_at")
     serializer_class = ShippingConfigSerializer
     permission_classes = [IsAuthenticated, IsSeller]
 
@@ -24,20 +24,24 @@ class ShippingConfigViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
-        return api_response(message='Shipping config created.', data=serializer.data, http_status=status.HTTP_201_CREATED)
+        return api_response(
+            message="Shipping config created.",
+            data=serializer.data,
+            http_status=status.HTTP_201_CREATED,
+        )
 
     def update(self, request, *args, **kwargs):
-        partial = kwargs.pop('partial', False)
+        partial = kwargs.pop("partial", False)
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
-        return api_response(message='Shipping config updated.', data=serializer.data)
+        return api_response(message="Shipping config updated.", data=serializer.data)
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         self.perform_destroy(instance)
-        return api_response(message='Shipping config deleted.', data={})
+        return api_response(message="Shipping config deleted.", data={})
 
 
 class ShippingAddressViewSet(viewsets.ModelViewSet):
@@ -45,7 +49,9 @@ class ShippingAddressViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return ShippingAddress.objects.filter(user=self.request.user).order_by('-created_at')
+        return ShippingAddress.objects.filter(user=self.request.user).order_by(
+            "-created_at"
+        )
 
     def list(self, request, *args, **kwargs):
         response = super().list(request, *args, **kwargs)
@@ -59,17 +65,21 @@ class ShippingAddressViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
-        return api_response(message='Shipping address created.', data=serializer.data, http_status=status.HTTP_201_CREATED)
+        return api_response(
+            message="Shipping address created.",
+            data=serializer.data,
+            http_status=status.HTTP_201_CREATED,
+        )
 
     def update(self, request, *args, **kwargs):
-        partial = kwargs.pop('partial', False)
+        partial = kwargs.pop("partial", False)
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
-        return api_response(message='Shipping address updated.', data=serializer.data)
+        return api_response(message="Shipping address updated.", data=serializer.data)
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         self.perform_destroy(instance)
-        return api_response(message='Shipping address deleted.', data={})
+        return api_response(message="Shipping address deleted.", data={})

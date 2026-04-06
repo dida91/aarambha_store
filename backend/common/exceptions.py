@@ -7,9 +7,9 @@ def enveloped_exception_handler(exc, context):
         return response
 
     response.data = {
-        'success': False,
-        'message': 'Request failed.',
-        'data': None,
-        'errors': response.data,
+        "success": False,
+        "message": "Request failed.",
+        "data": None,
+        "errors": response.data,
     }
     return response

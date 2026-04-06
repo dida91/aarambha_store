@@ -7,9 +7,13 @@ from common.constants import DELIVERY_AREAS, INSIDE_VALLEY, ZERO_DECIMAL
 
 
 class ShippingConfig(models.Model):
-    name = models.CharField(max_length=120, default='Default Shipping')
-    inside_valley_charge = models.DecimalField(max_digits=12, decimal_places=2, validators=[MinValueValidator(0)])
-    outside_valley_charge = models.DecimalField(max_digits=12, decimal_places=2, validators=[MinValueValidator(0)])
+    name = models.CharField(max_length=120, default="Default Shipping")
+    inside_valley_charge = models.DecimalField(
+        max_digits=12, decimal_places=2, validators=[MinValueValidator(0)]
+    )
+    outside_valley_charge = models.DecimalField(
+        max_digits=12, decimal_places=2, validators=[MinValueValidator(0)]
+    )
     free_inside_valley = models.BooleanField(default=False)
     free_delivery_all_nepal = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
@@ -19,9 +23,9 @@ class ShippingConfig(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=['is_active'],
+                fields=["is_active"],
                 condition=models.Q(is_active=True),
-                name='single_active_shipping_config',
+                name="single_active_shipping_config",
             )
         ]
 
@@ -39,7 +43,9 @@ class ShippingConfig(models.Model):
 
 
 class ShippingAddress(models.Model):
-    user = models.ForeignKey('accounts.User', on_delete=models.CASCADE, related_name='shipping_addresses')
+    user = models.ForeignKey(
+        "accounts.User", on_delete=models.CASCADE, related_name="shipping_addresses"
+    )
     full_name = models.CharField(max_length=255)
     phone = models.CharField(max_length=20)
     area = models.CharField(max_length=32, choices=DELIVERY_AREAS)
@@ -51,7 +57,7 @@ class ShippingAddress(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        indexes = [models.Index(fields=['user', 'is_default'])]
+        indexes = [models.Index(fields=["user", "is_default"])]
 
     def __str__(self):
-        return f'{self.full_name} - {self.city}'
+        return f"{self.full_name} - {self.city}"

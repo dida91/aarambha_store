@@ -18,24 +18,29 @@ class AdminDashboardMetricsView(APIView):
 
         base = Order.objects.all()
         data = {
-            'total_orders': base.count(),
-            'pending_orders': base.filter(status=Order.Status.PENDING).count(),
-            'rejected_orders': base.filter(status=Order.Status.REJECTED).count(),
-            'today_sales': str(
-                base.filter(status=Order.Status.CONFIRMED, created_at__date=today)
-                .aggregate(total=Coalesce(Sum('total_amount'), 0))['total']
+            "total_orders": base.count(),
+            "pending_orders": base.filter(status=Order.Status.PENDING).count(),
+            "rejected_orders": base.filter(status=Order.Status.REJECTED).count(),
+            "today_sales": str(
+                base.filter(
+                    status=Order.Status.CONFIRMED, created_at__date=today
+                ).aggregate(total=Coalesce(Sum("total_amount"), 0))["total"]
             ),
-            'month_sales': str(
-                base.filter(status=Order.Status.CONFIRMED, created_at__date__gte=month_start)
-                .aggregate(total=Coalesce(Sum('total_amount'), 0))['total']
+            "month_sales": str(
+                base.filter(
+                    status=Order.Status.CONFIRMED, created_at__date__gte=month_start
+                ).aggregate(total=Coalesce(Sum("total_amount"), 0))["total"]
             ),
-            'monthly_trend': [
-                {'month': row['month'].strftime('%Y-%m') if row['month'] else None, 'sales': str(row['sales'])}
+            "monthly_trend": [
+                {
+                    "month": row["month"].strftime("%Y-%m") if row["month"] else None,
+                    "sales": str(row["sales"]),
+                }
                 for row in base.filter(status=Order.Status.CONFIRMED)
-                .annotate(month=TruncMonth('created_at'))
-                .values('month')
-                .annotate(sales=Coalesce(Sum('total_amount'), 0))
-                .order_by('month')
+                .annotate(month=TruncMonth("created_at"))
+                .values("month")
+                .annotate(sales=Coalesce(Sum("total_amount"), 0))
+                .order_by("month")
             ],
         }
         return api_response(data=data)
