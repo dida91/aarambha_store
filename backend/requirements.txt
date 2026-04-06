@@ -1,0 +1,16 @@
+Django==5.1.14
+djangorestframework==3.15.2
+djangorestframework-simplejwt==5.3.1
+drf-spectacular==0.27.2
+django-filter==24.3
+psycopg2-binary==2.9.9
+cloudinary==1.41.0
+django-cloudinary-storage==0.3.0
+celery==5.4.0
+redis==5.0.8
+django-cors-headers==4.4.0
+python-dotenv==1.0.1
+pytest==8.3.3
+pytest-django==4.9.0
+ruff==0.6.9
+black==26.3.1
