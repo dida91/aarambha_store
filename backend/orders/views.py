@@ -20,6 +20,11 @@ class OrderViewSet(viewsets.ReadOnlyModelViewSet):
     search_fields = ["id", "shipping_snapshot__address", "shipping_snapshot__city"]
     ordering_fields = ["created_at", "grand_total", "status"]
 
+    def get_throttles(self):
+        if self.action == "checkout":
+            self.throttle_scope = "checkout"
+        return super().get_throttles()
+
     def get_queryset(self):
         queryset = Order.objects.select_related("user").prefetch_related(
             "items",
@@ -40,9 +45,11 @@ class OrderViewSet(viewsets.ReadOnlyModelViewSet):
             return [permissions.IsAuthenticated(), IsCustomer()]
         if self.action in {"seller_list", "update_status"}:
             return [permissions.IsAuthenticated(), IsSellerOrAdmin()]
+        if self.action == "health":
+            return [permissions.AllowAny()]
         return [permissions.IsAuthenticated()]
 
-    @action(detail=False, methods=["get"], url_path="health", permission_classes=[])
+    @action(detail=False, methods=["get"], url_path="health")
     def health(self, request):
         return Response(
             build_envelope(
@@ -55,7 +62,6 @@ class OrderViewSet(viewsets.ReadOnlyModelViewSet):
 
     @action(detail=False, methods=["post"], url_path="checkout")
     def checkout(self, request):
-        self.throttle_scope = "checkout"
         serializer = CheckoutSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         payload = serializer.validated_data

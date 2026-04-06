@@ -14,8 +14,7 @@ from promotions.services import validate_and_calculate_discount
 class PromotionsHealthViewSet(viewsets.ViewSet):
     permission_classes = [permissions.AllowAny]
 
-    @action(detail=False, methods=["get"], url_path="health")
-    def health(self, request):
+    def list(self, request):
         return Response(
             build_envelope(
                 success=True,

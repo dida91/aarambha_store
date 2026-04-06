@@ -1,6 +1,5 @@
 from django.db.models import Prefetch
 from rest_framework import permissions, viewsets
-from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from catalog.models import Category, Product, ProductImage
@@ -12,8 +11,7 @@ from common.response import build_envelope
 class CatalogHealthViewSet(viewsets.ViewSet):
     permission_classes = [permissions.AllowAny]
 
-    @action(detail=False, methods=["get"], url_path="health")
-    def health(self, request):
+    def list(self, request):
         return Response(
             build_envelope(
                 success=True,

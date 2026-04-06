@@ -1,6 +1,7 @@
 from django.db.models import F
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
+from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
 
 from cart.models import Cart, CartItem
@@ -43,9 +44,11 @@ class CartViewSet(viewsets.ViewSet):
     def add_item(self, request):
         serializer = AddToCartSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        product = Product.objects.get(
+        product = Product.objects.filter(
             id=serializer.validated_data["product_id"], is_active=True
-        )
+        ).first()
+        if product is None:
+            raise NotFound(detail="Product not found.")
         cart = self._get_cart(request.user)
         item, created = CartItem.objects.get_or_create(
             cart=cart,

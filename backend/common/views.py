@@ -2,7 +2,7 @@ from decimal import Decimal
 
 from django.db.models import Sum
 from django.utils import timezone
-from rest_framework.permissions import IsAdminUser
+from rest_framework.permissions import AllowAny, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -11,7 +11,7 @@ from orders.models import Order
 
 
 class CommonHealthView(APIView):
-    permission_classes = []
+    permission_classes = [AllowAny]
 
     def get(self, request):
         return Response(

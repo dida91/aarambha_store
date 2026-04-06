@@ -12,8 +12,7 @@ from shipping.services import get_active_shipping_config
 class ShippingHealthViewSet(viewsets.ViewSet):
     permission_classes = [permissions.AllowAny]
 
-    @action(detail=False, methods=["get"], url_path="health")
-    def health(self, request):
+    def list(self, request):
         return Response(
             build_envelope(
                 success=True,
