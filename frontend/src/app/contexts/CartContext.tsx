@@ -1,25 +1,12 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 
 import { addCartItem, getMyCart, removeCartItem, updateCartItem } from '../../features/cart/service'
-import type { Cart } from '../../types/cart'
-import { AuthContext } from './AuthContext'
-
-interface CartContextValue {
-  cart: Cart | null
-  isLoading: boolean
-  subtotal: number
-  total: number
-  refreshCart: () => Promise<void>
-  addItem: (productId: number, quantity: number) => Promise<void>
-  updateItem: (itemId: number, quantity: number) => Promise<void>
-  removeItem: (itemId: number) => Promise<void>
-}
-
-export const CartContext = createContext<CartContextValue | null>(null)
+import { AuthContext } from './auth-context'
+import { CartContext, type CartContextValue } from './cart-context'
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const auth = useContext(AuthContext)
-  const [cart, setCart] = useState<Cart | null>(null)
+  const [cart, setCart] = useState<CartContextValue['cart']>(null)
   const [isLoading, setIsLoading] = useState(false)
 
   const refreshCart = useCallback(async () => {
