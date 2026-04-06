@@ -52,9 +52,23 @@ Production-ready single-seller eCommerce platform for Nepal.
 └── README.md
 ```
 
-## Setup & run instructions
+## Quick Start (Docker)
 
-### Local backend
+### First-time setup and run (copy/paste)
+
+```bash
+cd /home/runner/work/aarambha_store/aarambha_store && docker compose up -d --build && docker compose ps && curl -i http://localhost:8000/api/catalog/products/ && curl -i http://localhost:8000/admin/
+```
+
+### Stop stack
+
+```bash
+docker compose down
+```
+
+### Local (without Docker)
+
+Backend:
 
 ```bash
 cd backend
@@ -63,18 +77,12 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-### Local frontend
+Frontend:
 
 ```bash
 cd frontend
 npm install
 npm run dev
-```
-
-### Docker compose
-
-```bash
-docker compose up --build
 ```
 
 ## Validation commands
@@ -120,3 +128,30 @@ npm run test
 - Payment gateway integration is not included yet.
 - Frontend currently focuses on foundational flows; checkout UX and seller dashboard can be expanded.
 - Additional end-to-end tests (Playwright/Cypress) can be added for cross-stack workflows.
+
+## Troubleshooting
+
+- **Blank frontend page / runtime crash**
+  - Check browser console for runtime errors.
+  - Verify backend API response shape at `http://localhost:8000/api/catalog/products/`.
+  - Rebuild and restart: `docker compose up -d --build`.
+
+- **Backend returns 500 on `/api/*`**
+  - Ensure migrations are applied (compose now runs migrate before server start).
+  - Check logs: `docker compose logs backend --tail=200`.
+
+- **Backend root `/` returns Not Found**
+  - This is expected; use `/admin/` or `/api/...` routes.
+
+- **Admin styling/static missing**
+  - Ensure `DEBUG=True` in local dev (compose sets this for backend).
+  - Re-open `http://localhost:8000/admin/` after backend restart.
+
+- **Docker socket permission denied**
+  - Add your user to docker group and re-login:
+    - `sudo usermod -aG docker $USER`
+    - then log out/in (or restart shell session).
+
+- **Port conflicts (5432, 6379, 8000, 5173)**
+  - Override host ports in `docker-compose.yml` (left side of `host:container`).
+  - Example: change `5432:5432` to `55432:5432` if local Postgres already uses 5432.
