@@ -57,7 +57,7 @@ Production-ready single-seller eCommerce platform for Nepal.
 ### First-time setup and run (copy/paste)
 
 ```bash
-cd /path/to/aarambha_store && docker compose up -d --build && docker compose ps && curl -i http://localhost:8000/api/catalog/products/ && curl -i http://localhost:8000/admin/
+cd aarambha_store && docker compose up -d --build && docker compose ps && curl -i http://localhost:8000/api/catalog/products/ && curl -i http://localhost:8000/admin/
 ```
 
 ### Stop stack
