@@ -1,0 +1,30 @@
+Build a production-ready single-seller eCommerce platform for Nepal in this repo.
+Store name/branding everywhere: Aarambha Store.
+
+Stack: Django + DRF, React (Vite) + TypeScript, PostgreSQL, Cloudinary, JWT (access/refresh), Celery + Redis, drf-spectacular, Docker/docker-compose, pytest, vitest+RTL, Ruff+Black, ESLint+Prettier.
+
+Implement apps: accounts, catalog, promotions, shipping, cart, orders, common.
+
+Must include:
+
+    Product CRUD with validations and multiple Cloudinary images
+    Promo system with all constraints (date window, usage limits, per-user, allowed users/public, min cart value)
+    ShippingConfig with single active config and delivery logic for INSIDE_VALLEY / OUTSIDE_VALLEY; free_inside_valley and free_delivery_all_nepal toggles
+    Checkout with atomic order creation, order/item snapshot, shipping snapshot, Decimal-based calculations server-side only, select_for_update to prevent overselling
+    Order lifecycle + validation: PENDING→CONFIRMED/REJECTED, rejection reason required, invalid jump protection, status history table with actor+timestamp+note
+    Customer order list/detail with timeline and rejection reason
+    Seller endpoints for product/promo/shipping/order management
+    Response envelope: success/message/data/errors
+    Customized Django admin (ProductAdmin, PromoCodeAdmin, ShippingConfigAdmin, OrderAdmin actions + status history inline)
+    Admin dashboard metrics (total, pending, rejected, today sales, month sales)
+    Role-based access, rate-limits on sensitive endpoints, pagination/query optimization/indexes/check constraints
+    drf-spectacular OpenAPI docs
+    Full Docker + .env.example
+    Backend + frontend tests for critical flows
+
+Deliverables in PR description:
+
+    ASCII architecture diagram
+    Full folder structure
+    Setup/run instructions
+    Known limitations/future improvements
