@@ -1,73 +1,71 @@
-# React + TypeScript + Vite
+# Aarambha Store Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Production-ready React + TypeScript + Vite storefront aligned to the backend API envelope and route contracts.
 
-Currently, two official plugins are available:
+## Stack
+- React 19 + TypeScript + Vite
+- Tailwind CSS
+- React Router
+- Axios
+- Context API (Auth, Cart, Toast)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Project Structure
+- `src/app` app bootstrap, routing, providers, contexts
+- `src/components/common` reusable UI and route guards
+- `src/components/layout` layout shell components
+- `src/features/*` feature service modules
+- `src/lib` API client, endpoint config, utilities
+- `src/hooks` shared hooks
+- `src/types` API and domain types
+- `src/pages` route-based pages
+- `src/styles` design tokens
 
-## React Compiler
+## Environment Variables
+Copy `.env.example` to `.env`:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+cp .env.example .env
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Variables:
+- `VITE_API_BASE_URL` (required): backend API base URL (example: `http://localhost:8000/api`)
+- `VITE_API_WITH_CREDENTIALS` (optional): `true` or `false` for cookie-based auth compatibility
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Setup
+```bash
+npm install
 ```
+
+## Run Dev Server
+```bash
+npm run dev
+```
+
+## Build
+```bash
+npm run build
+```
+
+## Validate
+```bash
+npm run lint
+npm run test
+npm run build
+```
+
+## Auth + API Notes
+- API requests are centralized in `src/lib/api.ts`.
+- Request interceptor attaches `Bearer <access>` token.
+- Response interceptor normalizes envelope errors and retries once using `/accounts/refresh/`.
+- Tokens are persisted in `localStorage` for session restoration.
+
+## Routes
+- `/` Home
+- `/products` Products
+- `/products/:id` ProductDetails
+- `/cart` Cart (protected)
+- `/checkout` Checkout (protected)
+- `/login` Login
+- `/register` Register
+- `/profile` Profile (protected)
+- `*` NotFound
