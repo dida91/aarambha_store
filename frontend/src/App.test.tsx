@@ -51,4 +51,53 @@ describe('Aarambha Store app', () => {
       ).toBeInTheDocument()
     })
   })
+
+  it('renders products from paginated API envelope data', async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        success: true,
+        message: 'Products fetched',
+        data: {
+          count: 1,
+          next: null,
+          previous: null,
+          results: [
+            {
+              id: 2,
+              name: 'Mustang Apples',
+              slug: 'mustang-apples',
+              price: '350.00',
+              stock_quantity: 14,
+            },
+          ],
+        },
+        errors: null,
+      }),
+    })
+
+    render(<App />)
+
+    await waitFor(() => {
+      expect(screen.getByText(/Mustang Apples/)).toBeInTheDocument()
+    })
+  })
+
+  it('does not crash when API returns malformed product list data', async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        success: true,
+        message: 'Products fetched',
+        data: { unexpected: 'shape' },
+        errors: null,
+      }),
+    })
+
+    render(<App />)
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: 'Aarambha Store Products' })).toBeInTheDocument()
+    })
+  })
 })
